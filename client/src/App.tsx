@@ -20,7 +20,8 @@ function Router() {
 
   const checkAuth = async () => {
     try {
-      const result = await apiRequest("GET", "/api/auth/me", {});
+      const response = await apiRequest("GET", "/api/auth/me", {});
+      const result = await response.json();
       setUser(result.user);
     } catch (error) {
       setUser(null);

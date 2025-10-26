@@ -240,12 +240,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const pnr = nanoid(10).toUpperCase();
 
-      const booking = await storage.createBooking({
+      const bookingData = {
         ...validatedData,
         userId: req.session.userId,
         fare: finalFare.toFixed(2),
         pnr,
-      });
+      };
+      
+      const booking = await storage.createBooking(bookingData);
 
       const bookingWithDetails = await storage.getBookingByPNR(pnr);
       if (bookingWithDetails) {

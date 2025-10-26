@@ -26,7 +26,7 @@ export interface IStorage {
   getUserBookings(userId: string): Promise<BookingWithDetails[]>;
   getBookingByPNR(pnr: string): Promise<BookingWithDetails | undefined>;
   getBookedSeats(routeId: string, travelDate: string, coach: string): Promise<{ row: number; column: number }[]>;
-  createBooking(booking: InsertBooking & { pnr: string }): Promise<Booking>;
+  createBooking(booking: InsertBooking & { pnr: string; userId: string; fare: string }): Promise<Booking>;
   cancelBooking(bookingId: string, userId: string): Promise<void>;
 }
 
@@ -122,7 +122,7 @@ export class DatabaseStorage implements IStorage {
     return bookedSeats;
   }
 
-  async createBooking(booking: InsertBooking & { pnr: string }): Promise<Booking> {
+  async createBooking(booking: InsertBooking & { pnr: string; userId: string; fare: string }): Promise<Booking> {
     const [newBooking] = await db.insert(bookings).values(booking).returning();
     return newBooking;
   }
