@@ -33,12 +33,8 @@ export default function Register({ onLogin }: RegisterProps) {
     setIsLoading(true);
     try {
       const result = await apiRequest("POST", "/api/auth/register", data);
-      toast({
-        title: "Account created!",
-        description: "Welcome to Panem Express. Start booking your journey.",
-      });
       onLogin(result.user);
-      setTimeout(() => setLocation("/book"), 100);
+      setLocation("/book");
     } catch (error: any) {
       toast({
         title: "Registration failed",

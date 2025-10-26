@@ -32,12 +32,8 @@ export default function Login({ onLogin }: LoginProps) {
     setIsLoading(true);
     try {
       const result = await apiRequest("POST", "/api/auth/login", data);
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
       onLogin(result.user);
-      setTimeout(() => setLocation("/book"), 100);
+      setLocation("/book");
     } catch (error: any) {
       toast({
         title: "Login failed",
