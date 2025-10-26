@@ -60,7 +60,8 @@ export default function BookTicket() {
 
   const createBooking = useMutation({
     mutationFn: async (data: BookingFormData) => {
-      return await apiRequest("POST", "/api/bookings", data);
+      const response = await apiRequest("POST", "/api/bookings", data);
+      return await response.json();
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["/api/bookings"] });
@@ -71,6 +72,7 @@ export default function BookTicket() {
       setLocation(`/confirmation/${data.pnr}`);
     },
     onError: (error: any) => {
+      console.error("Booking error:", error);
       toast({
         title: "Booking Failed",
         description: error.message || "Unable to complete booking. Please try again.",
@@ -126,6 +128,8 @@ export default function BookTicket() {
   };
 
   const onSubmit = async (data: BookingFormData) => {
+    console.log("Form data:", data);
+    console.log("Form errors:", form.formState.errors);
     createBooking.mutate(data);
   };
 
