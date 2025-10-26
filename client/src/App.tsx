@@ -16,19 +16,20 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const [user, setUser] = useState<{ username: string; email: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+
+  const checkAuth = async () => {
+    try {
+      const result = await apiRequest("GET", "/api/auth/me", {});
+      setUser(result.user);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function checkAuth() {
-      try {
-        const result = await apiRequest("GET", "/api/auth/me", {});
-        setUser(result.user);
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    }
     checkAuth();
   }, []);
 
@@ -61,13 +62,27 @@ function Router() {
     <div className="min-h-screen bg-background">
       <Navbar user={user} onLogout={handleLogout} />
       <Switch>
-        <Route path="/" component={() => <Home user={user} />} />
-        <Route path="/login" component={() => <Login onLogin={handleLogin} />} />
-        <Route path="/register" component={() => <Register onLogin={handleLogin} />} />
-        <Route path="/book" component={() => user ? <BookTicket /> : <Login onLogin={handleLogin} />} />
-        <Route path="/bookings" component={() => user ? <MyBookings /> : <Login onLogin={handleLogin} />} />
-        <Route path="/confirmation/:pnr" component={Confirmation} />
-        <Route component={NotFound} />
+        <Route path="/">
+          <Home user={user} />
+        </Route>
+        <Route path="/login">
+          <Login onLogin={handleLogin} />
+        </Route>
+        <Route path="/register">
+          <Register onLogin={handleLogin} />
+        </Route>
+        <Route path="/book">
+          {user ? <BookTicket /> : <Login onLogin={handleLogin} />}
+        </Route>
+        <Route path="/bookings">
+          {user ? <MyBookings /> : <Login onLogin={handleLogin} />}
+        </Route>
+        <Route path="/confirmation/:pnr">
+          <Confirmation />
+        </Route>
+        <Route>
+          <NotFound />
+        </Route>
       </Switch>
     </div>
   );
