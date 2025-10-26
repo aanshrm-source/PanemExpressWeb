@@ -33,19 +33,18 @@ export default function Register({ onLogin }: RegisterProps) {
     setIsLoading(true);
     try {
       const result = await apiRequest("POST", "/api/auth/register", data);
-      onLogin(result.user);
       toast({
         title: "Account created!",
         description: "Welcome to Panem Express. Start booking your journey.",
       });
-      setLocation("/book");
+      onLogin(result.user);
+      setTimeout(() => setLocation("/book"), 100);
     } catch (error: any) {
       toast({
         title: "Registration failed",
         description: error.message || "Unable to create account. Username or email may already exist.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   }

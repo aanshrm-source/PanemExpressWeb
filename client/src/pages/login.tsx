@@ -32,19 +32,18 @@ export default function Login({ onLogin }: LoginProps) {
     setIsLoading(true);
     try {
       const result = await apiRequest("POST", "/api/auth/login", data);
-      onLogin(result.user);
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
-      setLocation("/book");
+      onLogin(result.user);
+      setTimeout(() => setLocation("/book"), 100);
     } catch (error: any) {
       toast({
         title: "Login failed",
         description: error.message || "Invalid username or password",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   }
