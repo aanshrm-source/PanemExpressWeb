@@ -33,6 +33,10 @@ export default function Register({ onLogin }: RegisterProps) {
     try {
       const result = await apiRequest("POST", "/api/auth/register", data);
       onLogin(result.user);
+      
+      // Wait a moment for session to be saved
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       window.location.href = "/book";
     } catch (error: any) {
       toast({

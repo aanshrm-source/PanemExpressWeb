@@ -44,10 +44,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       req.session.userId = user.id;
       
+      // Explicitly save session and wait for it to complete
       await new Promise<void>((resolve, reject) => {
         req.session.save((err) => {
-          if (err) reject(err);
-          else resolve();
+          if (err) {
+            console.error("Session save error:", err);
+            reject(err);
+          } else {
+            resolve();
+          }
         });
       });
 
@@ -79,10 +84,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       req.session.userId = user.id;
       
+      // Explicitly save session and wait for it to complete
       await new Promise<void>((resolve, reject) => {
         req.session.save((err) => {
-          if (err) reject(err);
-          else resolve();
+          if (err) {
+            console.error("Session save error:", err);
+            reject(err);
+          } else {
+            resolve();
+          }
         });
       });
 

@@ -32,6 +32,10 @@ export default function Login({ onLogin }: LoginProps) {
     try {
       const result = await apiRequest("POST", "/api/auth/login", data);
       onLogin(result.user);
+      
+      // Wait a moment for session to be saved
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       window.location.href = "/book";
     } catch (error: any) {
       toast({
