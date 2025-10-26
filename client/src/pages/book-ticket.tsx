@@ -27,7 +27,11 @@ const bookingFormSchema = insertBookingSchema.extend({
 
 type BookingFormData = z.infer<typeof bookingFormSchema>;
 
-export default function BookTicket() {
+interface BookTicketProps {
+  user: { username: string; email: string } | null;
+}
+
+export default function BookTicket({ user }: BookTicketProps) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
@@ -128,6 +132,16 @@ export default function BookTicket() {
   };
 
   const onSubmit = async (data: BookingFormData) => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please login or register to complete your booking.",
+        variant: "destructive",
+      });
+      setLocation("/login");
+      return;
+    }
+    
     console.log("Form data:", data);
     console.log("Form errors:", form.formState.errors);
     createBooking.mutate(data);
@@ -371,8 +385,10 @@ export default function BookTicket() {
                               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                               Confirming Booking...
                             </>
-                          ) : (
+                          ) : user ? (
                             `Confirm Booking - ₹${fare.toFixed(2)}`
+                          ) : (
+                            "Login to Confirm Booking"
                           )}
                         </Button>
                       </div>

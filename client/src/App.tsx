@@ -72,7 +72,7 @@ function Router() {
           <Register onLogin={handleLogin} />
         </Route>
         <Route path="/book">
-          {user ? <BookTicket /> : <Login onLogin={handleLogin} />}
+          <BookTicket user={user} />
         </Route>
         <Route path="/bookings">
           {user ? <MyBookings /> : <Login onLogin={handleLogin} />}
