@@ -1,0 +1,93 @@
+App Name: Panem Express Web Booking Portal
+Description:
+Create a full-stack web-based rail-booking portal (similar in workflow to IRCTC) for the Panem Express, with a modern web interface and zero online payment (payment is made at station). The app shall include:
+
+Core Features:
+
+User Registration & Login:
+
+Users register with username, password and email (their Gmail address).
+
+Users log in to manage bookings.
+
+Route & Date Selection:
+
+A fixed list of routes (e.g., Delhi → Mumbai, Mumbai → Delhi, etc.) each with defined distances.
+
+Users select travel date from a calendar widget.
+
+Seat availability is tracked per route + date.
+
+Coach/Class & Seat Map UI:
+
+For each route & date: 5 coaches, 5 rows × 4 seats.
+
+Each coach corresponds to a class: Business, 1st Class, Economy, 2nd Class, Non A/C.
+
+Seat map UI shows Available vs Booked seats; users can select seats.
+
+Fare Calculation:
+
+Fare = distance × rate per km (based on class)
+
+Show fare before confirmation.
+
+Age validation: users enter passenger age; if age < 7 → not allowed to book alone. Age > 125 → invalid.
+
+Senior discount: age ≥ 60 get 20% off.
+
+Booking Flow:
+
+User picks route, date, coach, seat, passenger name and age.
+
+Unique PNR generated per booking.
+
+Booking confirmed in system; user message: “Pay at station and present this PNR”.
+
+Persist booking under route, date so seat no longer available for that slot (even after logout/login).
+
+Cancellation Flow:
+
+Logged-in user can view bookings (their email) and cancel before travel date.
+
+On cancel: seat becomes available, status updated.
+
+Email Notifications via Gmail:
+
+After booking, send confirmation email to user’s Gmail: route, date, coach, seat, PNR, fare, instruction to pay at station.
+
+After cancellation, send cancellation email.
+
+Use Gmail SMTP with App Password (enter sender Gmail & app password once in settings).
+
+Admin or Shared Data:
+
+Seat availability and bookings persist globally (for all users) by route & date.
+
+New users logging in cannot book seats already booked.
+
+Web Deployment & Free Plan:
+
+Deploy as web app (URL accessible via browser).
+
+Use Replit’s free tier only (no paid add-ons).
+
+Ensure no online payment gateway is integrated; payment handled offline at station.
+
+Responsive UI:
+
+Designed to work on desktop and tablets.
+
+Clear seat map visuals, route/ date/ booking summary screens.
+
+Data Model Highlights (for developer):
+
+Users: id, username, hashed_password, email
+
+Routes: id, name, distance_km
+
+Bookings: id, user_id, route_id, date, coach, row, column, passenger_name, passenger_age, fare, pnr, status
+
+Seats: derived from bookings per route/date/coach/row/column
+
+EmailSettings: sender_email (fixed), app_password (securely stored)
