@@ -1,14 +1,16 @@
-import nodemailer from "nodemailer";
 import type { BookingWithDetails } from "@shared/schema";
 import { format } from "date-fns";
 
-const transporter = nodemailer.createTransporter({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+async function getTransporter() {
+  const nodemailer = await import("nodemailer");
+  return nodemailer.default.createTransporter({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
+}
 
 export async function sendBookingConfirmation(booking: BookingWithDetails) {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
@@ -107,6 +109,7 @@ export async function sendBookingConfirmation(booking: BookingWithDetails) {
   };
 
   try {
+    const transporter = await getTransporter();
     await transporter.sendMail(mailOptions);
     console.log(`Booking confirmation email sent to ${booking.user.email}`);
   } catch (error) {
@@ -180,6 +183,7 @@ export async function sendCancellationEmail(booking: BookingWithDetails) {
   };
 
   try {
+    const transporter = await getTransporter();
     await transporter.sendMail(mailOptions);
     console.log(`Cancellation email sent to ${booking.user.email}`);
   } catch (error) {
