@@ -73,6 +73,8 @@ export const insertBookingSchema = createInsertSchema(bookings).omit({
   pnr: true,
   createdAt: true,
   status: true,
+  userId: true,
+  fare: true,
 }).extend({
   passengerAge: z.number().min(7, "Passenger must be at least 7 years old").max(125, "Invalid age"),
   passengerName: z.string().min(1, "Passenger name is required"),
