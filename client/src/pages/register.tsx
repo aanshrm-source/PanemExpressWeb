@@ -34,7 +34,10 @@ export default function Register({ onLogin }: RegisterProps) {
     try {
       const result = await apiRequest("POST", "/api/auth/register", data);
       onLogin(result.user);
-      setLocation("/book");
+      // Use setTimeout to allow state to update before navigation
+      setTimeout(() => {
+        setLocation("/book");
+      }, 0);
     } catch (error: any) {
       toast({
         title: "Registration failed",

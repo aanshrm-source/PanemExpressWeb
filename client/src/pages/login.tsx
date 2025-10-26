@@ -33,7 +33,10 @@ export default function Login({ onLogin }: LoginProps) {
     try {
       const result = await apiRequest("POST", "/api/auth/login", data);
       onLogin(result.user);
-      setLocation("/book");
+      // Use setTimeout to allow state to update before navigation
+      setTimeout(() => {
+        setLocation("/book");
+      }, 0);
     } catch (error: any) {
       toast({
         title: "Login failed",
