@@ -360,6 +360,11 @@ export default function BookTicket() {
                           className="w-full h-12"
                           disabled={createBooking.isPending}
                           data-testid="button-confirm-booking"
+                          onClick={() => {
+                            console.log("Button clicked!");
+                            console.log("Form state:", form.getValues());
+                            console.log("Form errors:", form.formState.errors);
+                          }}
                         >
                           {createBooking.isPending ? (
                             <>
