@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { useState } from "react";
+import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginCredentials } from "@shared/schema";
@@ -16,17 +16,8 @@ interface LoginProps {
 }
 
 export default function Login({ onLogin }: LoginProps) {
-  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [shouldRedirect, setShouldRedirect] = useState(false);
-
-  useEffect(() => {
-    if (shouldRedirect) {
-      setLocation("/book");
-      setShouldRedirect(false);
-    }
-  }, [shouldRedirect, setLocation]);
 
   const form = useForm<LoginCredentials>({
     resolver: zodResolver(loginSchema),
@@ -41,7 +32,7 @@ export default function Login({ onLogin }: LoginProps) {
     try {
       const result = await apiRequest("POST", "/api/auth/login", data);
       onLogin(result.user);
-      setShouldRedirect(true);
+      window.location.href = "/book";
     } catch (error: any) {
       toast({
         title: "Login failed",
