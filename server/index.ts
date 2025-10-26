@@ -4,6 +4,8 @@ import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { db } from "./db";
+import { routes } from "@shared/schema";
 
 const app = express();
 
@@ -73,6 +75,34 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Seed database with routes on startup
+  try {
+    const existingRoutes = await db.select().from(routes);
+    
+    if (existingRoutes.length === 0) {
+      log("Database is empty. Seeding routes...");
+      
+      const routesToSeed = [
+        { name: "Delhi to Mumbai Express", fromStation: "Delhi", toStation: "Mumbai", distanceKm: 1400 },
+        { name: "Mumbai to Delhi Express", fromStation: "Mumbai", toStation: "Delhi", distanceKm: 1400 },
+        { name: "Chennai to Kolkata Mail", fromStation: "Chennai", toStation: "Kolkata", distanceKm: 1650 },
+        { name: "Kolkata to Chennai Mail", fromStation: "Kolkata", toStation: "Chennai", distanceKm: 1650 },
+        { name: "Bangalore to Hyderabad Express", fromStation: "Bangalore", toStation: "Hyderabad", distanceKm: 575 },
+        { name: "Hyderabad to Bangalore Express", fromStation: "Hyderabad", toStation: "Bangalore", distanceKm: 575 },
+      ];
+      
+      for (const route of routesToSeed) {
+        await db.insert(routes).values(route);
+      }
+      
+      log(`Successfully seeded ${routesToSeed.length} routes to the database.`);
+    } else {
+      log(`Database already contains ${existingRoutes.length} routes. Skipping seed.`);
+    }
+  } catch (error) {
+    console.error("Error seeding database:", error);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

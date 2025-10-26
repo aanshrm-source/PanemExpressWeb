@@ -51,6 +51,7 @@ Preferred communication style: Simple, everyday language.
 - Session middleware for authentication state
 - Centralized error handling
 - Request/response logging with timestamps
+- **Automatic database seeding on startup** - Routes are automatically seeded into both development and production databases if they don't exist, ensuring the app works immediately after deployment
 
 **Authentication Flow**
 1. User registers with username, email, and password
