@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,14 @@ export default function Register({ onLogin }: RegisterProps) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      setLocation("/book");
+      setShouldRedirect(false);
+    }
+  }, [shouldRedirect, setLocation]);
 
   const form = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
@@ -34,10 +42,7 @@ export default function Register({ onLogin }: RegisterProps) {
     try {
       const result = await apiRequest("POST", "/api/auth/register", data);
       onLogin(result.user);
-      // Use setTimeout to allow state to update before navigation
-      setTimeout(() => {
-        setLocation("/book");
-      }, 0);
+      setShouldRedirect(true);
     } catch (error: any) {
       toast({
         title: "Registration failed",

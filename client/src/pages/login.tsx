@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +19,14 @@ export default function Login({ onLogin }: LoginProps) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+
+  useEffect(() => {
+    if (shouldRedirect) {
+      setLocation("/book");
+      setShouldRedirect(false);
+    }
+  }, [shouldRedirect, setLocation]);
 
   const form = useForm<LoginCredentials>({
     resolver: zodResolver(loginSchema),
@@ -33,10 +41,7 @@ export default function Login({ onLogin }: LoginProps) {
     try {
       const result = await apiRequest("POST", "/api/auth/login", data);
       onLogin(result.user);
-      // Use setTimeout to allow state to update before navigation
-      setTimeout(() => {
-        setLocation("/book");
-      }, 0);
+      setShouldRedirect(true);
     } catch (error: any) {
       toast({
         title: "Login failed",
