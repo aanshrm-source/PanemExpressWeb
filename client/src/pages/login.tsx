@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginCredentials } from "@shared/schema";
@@ -16,6 +16,7 @@ interface LoginProps {
 }
 
 export default function Login({ onLogin }: LoginProps) {
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,12 +32,9 @@ export default function Login({ onLogin }: LoginProps) {
     setIsLoading(true);
     try {
       const result = await apiRequest("POST", "/api/auth/login", data);
-      onLogin(result.user);
-      
-      // Wait a moment for session to be saved
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      window.location.href = "/book";
+      const userData = await result.json();
+      onLogin(userData.user);
+      setLocation("/book");
     } catch (error: any) {
       toast({
         title: "Login failed",
